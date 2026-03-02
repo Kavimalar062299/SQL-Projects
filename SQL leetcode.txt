@@ -1,0 +1,253 @@
+SQL Queries and Questions
+
+1.
+
+Question: Find the IDs of all products that are low in fat and recyclable.
+Query:
+SELECT product_id
+FROM Products
+WHERE low_fats='Y' AND recyclable='Y';
+
+2.
+
+Question: List the names of all customers whose referee ID is not 2 or is missing, sorted alphabetically.
+Query:
+SELECT name
+FROM Customer
+WHERE referee_id != 2 OR referee_id IS NULL
+ORDER BY name;
+
+3.
+
+Question: Retrieve countries with an area of at least 3,000,000 or a population of at least 25,000,000.
+Query:
+SELECT name, population, area
+FROM World
+WHERE area >= 3000000 OR population >= 25000000;
+
+4.
+
+Question: Find all authors who have viewed their own content.
+Query:
+SELECT DISTINCT author_id AS id
+FROM Views
+WHERE author_id = viewer_id
+ORDER BY id;
+
+5.
+
+Question: List tweet IDs for tweets that have content longer than 15 characters.
+Query:
+SELECT tweet_id
+FROM Tweets
+WHERE CHAR_LENGTH(content) > 15
+ORDER BY tweet_id;
+
+6.
+
+Question: Show each employee’s name along with their unique ID from the EmployeeUNI table, if available.
+Query:
+SELECT eu.unique_id, e.name
+FROM Employees e
+LEFT JOIN EmployeeUNI eu ON e.id = eu.id
+ORDER BY unique_id;
+
+7.
+
+Question: Display product name, sales year, and price for all sales, sorted by product name.
+Query:
+SELECT p.product_name, s.year, s.price
+FROM Sales s
+JOIN Product p ON p.product_id = s.product_id
+ORDER BY p.product_name;
+
+8.
+
+Question: Count the number of visits per customer that did not result in a transaction.
+Query:
+SELECT v.customer_id, COUNT(v.visit_id) AS count_no_trans
+FROM Visits v
+LEFT JOIN Transactions t ON v.visit_id = t.visit_id
+WHERE t.transaction_id IS NULL
+GROUP BY v.customer_id;
+
+9.
+
+Question: Find weather records where the temperature increased compared to the previous day.
+Query:
+SELECT w1.id
+FROM Weather w1
+JOIN Weather w2 ON DATEDIFF(w1.recordDate, w2.recordDate) = 1
+WHERE w1.temperature > w2.temperature
+ORDER BY w1.id;
+
+10.
+
+Question: Calculate the average processing time for each machine based on start and end activities.
+Query:
+SELECT m1.machine_id, ROUND(AVG(m2.timestamp - m1.timestamp),3) AS processing_time
+FROM Activity m1
+LEFT JOIN Activity m2
+ON m1.machine_id = m2.machine_id AND m1.process_id = m2.process_id
+AND m1.activity_type = 'start' AND m2.activity_type = 'end'
+GROUP BY m1.machine_id;
+
+11.
+
+Question: List employees with bonuses less than 1000 or no bonus, sorted by name.
+Query:
+SELECT e.name, b.bonus
+FROM Employee e
+LEFT JOIN Bonus b ON e.empId = b.empId
+WHERE b.bonus < 1000 OR b.bonus IS NULL
+ORDER BY e.name;
+
+12.
+
+Question: For each student and subject, count the number of exams the student attended.
+Query:
+SELECT s.student_id, s.student_name, su.subject_name, COUNT(e.student_id) AS attended_exams
+FROM Students s
+CROSS JOIN Subjects su
+LEFT JOIN Examinations e ON s.student_id = e.student_id AND su.subject_name = e.subject_name
+GROUP BY s.student_id, s.student_name, su.subject_name
+ORDER BY student_id, su.subject_name;
+
+13.
+
+Question: List the names of managers who manage at least 5 employees.
+Query:
+SELECT name
+FROM Employee e1
+JOIN Employee e2 ON e1.id = e2.managerId
+GROUP BY e1.id, e2.name
+HAVING COUNT(e1.id) >= 5;
+
+14.
+
+Question: Calculate the confirmation rate for each user.
+Query:
+SELECT s.user_id,
+IFNULL(ROUND(SUM(CASE WHEN c.action = 'confirmed' THEN 1 ELSE 0 END)/COUNT(c.action),2),0) AS confirmation_rate
+FROM Signups s
+LEFT JOIN Confirmations c ON s.user_id = c.user_id
+GROUP BY s.user_id;
+
+15.
+
+Question: Retrieve odd-numbered cinemas whose description is not 'boring', ordered by rating descending.
+Query:
+SELECT *
+FROM Cinema
+WHERE id % 2 = 1 AND description != 'boring'
+ORDER BY rating DESC;
+
+16.
+
+Question: Calculate the average price of each product weighted by units sold.
+Query:
+SELECT p.product_id, COALESCE(ROUND(SUM(p.price*u.units)/SUM(u.units),2),0) AS average_price
+FROM Prices p
+LEFT JOIN UnitsSold u ON p.product_id = u.product_id AND u.purchase_date BETWEEN p.start_date AND p.end_date
+GROUP BY p.product_id;
+
+17.
+
+Question: Count the number of distinct subjects each teacher teaches.
+Query:
+SELECT teacher_id, COUNT(DISTINCT subject_id) AS cnt
+FROM Teacher
+GROUP BY teacher_id
+ORDER BY teacher_id;
+
+18.
+
+Question: Compute the average experience of employees for each project.
+Query:
+SELECT p.project_id, ROUND(AVG(e.experience_years),2) AS average_years
+FROM Project p
+LEFT JOIN Employee e ON p.employee_id = e.employee_id
+GROUP BY p.project_id;
+
+19.
+
+Question: For each query, calculate its quality score and the percentage of poor ratings.
+Query:
+SELECT query_name,
+ROUND(AVG(rating*1.0/position),2) AS quality,
+ROUND(SUM(CASE WHEN rating < 3 THEN 1 ELSE 0 END)*100/COUNT(*),2) AS poor_query_percentage
+FROM Queries
+GROUP BY query_name;
+
+20.
+
+Question: Show monthly transaction counts, approved counts, total amounts, and approved amounts per country.
+Query:
+SELECT DATE_FORMAT(trans_date,'%Y-%m') AS month,
+country,
+COUNT(*) AS trans_count,
+COUNT(CASE WHEN state='approved' THEN 1 END) AS approved_count,
+SUM(amount) AS trans_total_amount,
+SUM(CASE WHEN state='approved' THEN amount ELSE 0 END) AS approved_total_amount
+FROM Transactions
+GROUP BY DATE_FORMAT(trans_date,'%Y-%m'), country
+ORDER BY trans_date;
+
+21.
+
+Question: Count daily active users over a one-month period.
+Query:
+SELECT activity_date AS day, COUNT(DISTINCT user_id) AS active_users
+FROM Activity
+WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27'
+GROUP BY activity_date
+ORDER BY activity_date;
+
+22.
+
+Question: For each product, get the first year it was sold along with quantity and price.
+Query:
+SELECT product_id, year AS first_year, quantity, price
+FROM Sales
+WHERE (product_id, year) IN (
+SELECT product_id, MIN(year)
+FROM Sales
+GROUP BY product_id
+);
+
+23.
+
+Question: List classes with at least 5 students enrolled.
+Query:
+SELECT class
+FROM Courses
+GROUP BY class
+HAVING COUNT(student) >= 5;
+
+24.
+
+Question: Count the number of followers for each user.
+Query:
+SELECT user_id, COUNT(follower_id) AS followers_count
+FROM Followers
+GROUP BY user_id
+ORDER BY user_id ASC;
+
+25.
+
+Question: Find customers who have purchased every product.
+Query:
+SELECT customer_id
+FROM Customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(*) FROM Product);
+
+26.
+
+Question: For each employee who is a manager, count the number of reports and their average age.
+Query:
+SELECT e1.employee_id, e1.name, COUNT(e2.employee_id) AS reports_count, ROUND(AVG(e2.age)) AS average_age
+FROM Employees e1
+JOIN Employees e2 ON e1.employee_id = e2.reports_to
+GROUP BY e1.employee_id, e1.name
+ORDER BY e1.employee_id;

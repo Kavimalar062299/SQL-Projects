@@ -1,0 +1,257 @@
+create database studentsdb;
+
+use studentsdb;
+
+create table students( 
+studentsid int auto_increment primary key,
+firstname varchar(50), 
+lastname varchar(30), 
+birthdate date, 
+gender varchar(10));
+
+create table course( 
+courseid int auto_increment primary key,
+coursename varchar(50), 
+credits int);
+
+create table enrollment( 
+enrollmentid int auto_increment primary key,
+courseid int, 
+studentsid int,
+enrollmentdate date,
+foreign key(studentsid) references students(studentsid),
+foreign key(courseid) references course(courseid));
+
+insert into students (firstname,lastname,birthdate,gender)
+values
+('Kavi', 'Malar', '1999-11-06', 'Male'),
+('Amitha', 'DG', '1999-12-08', 'Female'),
+('Ravi', 'Kumar', '2000-01-15', 'Male'),
+('Priya', 'Sharma', '2001-05-23', 'Female'),
+('Ajay', 'Singh', '1998-07-30', 'Male'),
+('Sneha', 'Patel', '2000-09-12', 'Female'),
+('Vikram', 'Das', '1999-03-17', 'Male'),
+('Anita', 'Rao', '2001-06-21', 'Female'),
+('Manoj', 'Gupta', '2000-10-05', 'Male'),
+('Divya', 'Mehta', '1998-12-11', 'Female');
+
+insert into course (coursename,credits) 
+VALUES
+('Mathematics', 4),
+('Physics', 3),
+('Chemistry', 3),
+('Biology', 4),
+('Computer Science', 5),
+('English Literature', 3),
+('History', 3),
+('Economics', 4),
+('Psychology', 3),
+('Philosophy', 2);
+
+insert into enrollment (courseid, studentsid, enrollmentdate) 
+VALUES
+(1, 1, '2023-01-15'),
+(2, 2, '2023-02-20'),
+(3, 3, '2023-03-10'),
+(4, 4, '2023-04-05'),
+(5, 5, '2023-05-18'),
+(6, 6, '2023-06-12'),
+(7, 7, '2023-07-22'),
+(8, 8, '2023-08-30'),
+(9, 9, '2023-09-14'),
+(10, 10, '2023-10-01');
+
+select*from students;
+
+-- =========================
+-- sales_management database
+-- =========================
+
+CREATE DATABASE sales_management;
+USE sales_management;
+
+CREATE TABLE ProductLines(
+productLine VARCHAR(70) PRIMARY KEY,
+textDescription VARCHAR(6000),
+htmlDescription MEDIUMTEXT,
+image BLOB
+);
+
+CREATE TABLE Products(
+productCode VARCHAR(60) PRIMARY KEY,
+productName VARCHAR(70) NOT NULL,
+productScale VARCHAR(70),
+productVendor VARCHAR(70),
+productDescription TEXT,
+quantityInStock INT,
+buyPrice DECIMAL(10,2),
+MSRP DECIMAL(10,2),
+productLine VARCHAR(70),
+FOREIGN KEY (productLine) REFERENCES ProductLines(productLine)
+);
+
+CREATE TABLE Offices(
+officeCode INT PRIMARY KEY,
+city VARCHAR(80),
+phone VARCHAR(50),
+addressLine1 VARCHAR(80),
+addressLine2 VARCHAR(80),
+state VARCHAR(80),
+country VARCHAR(80),
+postalCode VARCHAR(20),
+territory VARCHAR(80)
+);
+
+CREATE TABLE Employees(
+employeeNumber INT PRIMARY KEY,
+lastName VARCHAR(70),
+firstName VARCHAR(70),
+extension VARCHAR(20),
+email VARCHAR(70),
+officeCode INT,
+reportsTo INT,
+jobTitle VARCHAR(70)
+);
+
+CREATE TABLE Customers(
+customerNumber INT PRIMARY KEY,
+customerName VARCHAR(60),
+contactLastName VARCHAR(60),
+contactFirstName VARCHAR(60),
+phone VARCHAR(30),
+addressLine1 VARCHAR(60),
+addressLine2 VARCHAR(60),
+city VARCHAR(60),
+state VARCHAR(60),
+postalCode VARCHAR(20),
+country VARCHAR(60),
+salesRepEmployeeNumber INT,
+creditLimit DECIMAL(10,2)
+);
+
+CREATE TABLE Orders(
+orderNumber INT PRIMARY KEY,
+orderDate DATE,
+requiredDate DATE,
+shippedDate DATE,
+status VARCHAR(70),
+comments VARCHAR(3000),
+customerNumber INT
+);
+
+CREATE TABLE OrderDetails(
+orderNumber INT,
+productCode VARCHAR(60),
+quantityOrdered INT,
+orderLineNumber INT,
+priceEach DECIMAL(10,2),
+PRIMARY KEY(orderNumber, productCode, orderLineNumber)
+);
+
+CREATE TABLE Payments(
+customerNumber INT,
+checkNumber VARCHAR(50),
+paymentDate DATE,
+amount DECIMAL(10,2),
+PRIMARY KEY(customerNumber, checkNumber)
+);
+
+CREATE TABLE sales_data(
+transaction_id int,
+employee_id int,
+month varchar(70),
+sales_amount decimal(10,2)
+);
+
+-- insert data for ProductLines, Products, Offices, Employees, Customers, Orders, OrderDetails, Payments, sales_data
+-- (Paste your previous data inserts here exactly as you wrote them)
+
+-- queries
+select * from Products;
+select * from Offices;
+select * from ProductLines;
+alter table ProductLines drop image;
+select * from Employees;
+alter table Employees drop email;
+alter table Employees add email varchar(70);
+
+select productCode, productName, productLine, buyPrice, MSRP from Products;
+select productCode, productName, productLine, buyPrice, MSRP from Products where buyPrice >= 80;
+select * from Products where MSRP<200 and productVendor='Classic Cars Co';
+select * from Products where MSRP<200 and productLine='Classic Cars' order by buyPrice desc;
+select productCode, productName, productLine, buyPrice, MSRP from Products order by buyPrice desc limit 5;
+
+update Customers set creditLimit = 15000 WHERE customerNumber = 2005;
+update Customers set addressLine1 = "Goa", phone=52343345 WHERE customerNumber = 2005;
+select * from Customers;
+
+select * from OrderDetails where quantityOrdered < (select avg(quantityOrdered)from OrderDetails);
+select orderDate from Orders order by orderDate desc;
+
+select productLine,count(*) as count_productline from Products group by productline having count(*)<5;
+select customerNumber, sum(creditLimit) as Total_creditlimit from Customers group by customerNumber having sum(creditLimit) > 10000;
+select territory, count(*)as Total_territory from Offices group by territory having Total_territory > 3;
+
+select c.customerName, e.firstName as sales_rep from Customers c inner join Employees e on c.salesRepEmployeeNumber = e.employeeNumber;
+select c.customerNumber, c.customerName, e.firstName as sales_rep from Customers c left join Employees e on c.salesRepEmployeeNumber = e.employeeNumber;
+select c.customerNumber, c.customerName, e.firstName as sales_rep from Customers c right join Employees e on c.salesRepEmployeeNumber = e.employeeNumber;
+select e.firstName, p.productName from Employees e cross join Products p;
+
+select * FROM sales_data;
+
+select sales_amount, rank() over(order by sales_amount desc) as RK from sales_data;
+select sales_amount, dense_rank() over(order by sales_amount desc) as D_RK from sales_data;
+select *, rank() over(partition by month order by sales_amount desc) as RK from sales_data;
+select *, sum(sales_amount) over(partition by employee_id order by month) as runningtotal from sales_data;
+select *, lag(sales_amount) over(partition by employee_id order by month) as prev_month_amt from sales_data;
+select *, lead(sales_amount) over(partition by employee_id order by month) as current_month_amt from sales_data;
+
+
+-- =========================
+-- classicmodels101 database
+-- =========================
+
+create database if not exists classicmodels101;
+use classicmodels101;
+
+create table if not exists employees(
+employeeid int primary key,
+first_name varchar(50),
+last_name varchar(50),
+dept varchar(50),
+salary decimal(10,2)
+);
+
+insert into employees values
+(101, 'Arun',   'Kumar',   'Sales',     55000.00),
+(102, 'Meena',  'Sharma',  'HR',        48000.00),
+(103, 'Ravi',   'Verma',   'IT',        72000.50),
+(104, 'Pooja',  'Singh',   'Finance',   55000.00),
+(105, 'Karan',  'Patel',   'IT',        72000.50),
+(106, 'Sneha',  'Iyer',    'Sales',     61000.75),
+(107, 'Vikram', 'Reddy',   'HR',        48000.00),
+(108, 'Neha',   'Joshi',   'Finance',   83000.25),
+(109, 'Amit',   'Das',     'IT',        61000.75),
+(110, 'Divya',  'Nair',    'Sales',     55000.00);
+
+delimiter $$
+
+create procedure getemployeedetailsbydepartment(in dept_name varchar(50))
+begin
+select employeeid, first_name, last_name, dept, salary
+from employees
+where dept = dept_name;
+end $$
+
+delimiter ;
+call getemployeedetailsbydepartment('Sales');
+
+delimiter $$
+create procedure getemployeesbysalaryrange(in min_sal decimal(10,2),in max_sal decimal(10,2))
+begin
+select employeeid, first_name, last_name, dept, salary
+from employees
+where salary between min_sal and max_sal;
+end $$
+
+call getemployeesbysalaryrange(55000.00, 83000.25);
