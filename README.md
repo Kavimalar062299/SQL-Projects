@@ -67,7 +67,7 @@ Wrote advanced queries using joins, aggregations, and window functions
 
 Built stored procedures for employee and sales reporting
 
-Applied DDL operations (ALTER, DROP, ADD) for optimization
+Applied DDL, DML, DQL operations for optimization
 
 Outcome/Insight: Generated monthly sales running totals, ranked transactions, and department-wise employee insights.
 
