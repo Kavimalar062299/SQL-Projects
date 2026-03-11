@@ -12,6 +12,7 @@ Outcome/Insight: Calculated attrition rates, identified trends between job satis
 
 Skills: Aggregations, conditional logic, data summarization, business insights.
 
+
 2️⃣ IMDB SQL Projects
 
 What I did: Explored a movie database to find top-rated films, high-grossing directors, and analyze gender distribution in Hollywood.
@@ -21,6 +22,7 @@ How I did it: Used joins, date functions, filtering, and sorting to answer compl
 Outcome/Insight: Identified trends in film ratings and revenue patterns by director and year.
 
 Skills: SQL joins (inner, left), date manipulation, sorting/filtering, analytical thinking.
+
 
 3️⃣ SQL LeetCode Projects
 
@@ -32,6 +34,7 @@ Outcome/Insight: Built a strong foundation for algorithmic SQL problems and opti
 
 Skills: Problem-solving, advanced SQL queries, window functions, subqueries.
 
+
 4️⃣ Project Work (Sales Database)
 
 What I did: Created a comprehensive Sales database with Customers, Products, Orders, and Payments.
@@ -42,6 +45,7 @@ Outcome/Insight: Able to generate sales reports, top products, and customer insi
 
 Skills: Schema design, foreign keys, stored procedures, reporting, window functions.
 
+
 5️⃣ Multi Database Setup
 
 What I did: Managed three databases:
@@ -51,6 +55,7 @@ studentsdb – Student enrollment system
 sales_management – Sales and products analytics
 
 classicmodels101 – Employee records and HR analytics
+
 
 How I did it:
 
@@ -66,7 +71,9 @@ Applied DDL operations (ALTER, DROP, ADD) for optimization
 
 Outcome/Insight: Generated monthly sales running totals, ranked transactions, and department-wise employee insights.
 
+
 Skills: Multi-database management, DDL, DML, joins, stored procedures, analytics.
+
 
 Technical Highlights Across All Projects
 
@@ -79,5 +86,6 @@ Automation: Stored procedures for reusable and parameterized operations.
 Database Design: Creating/altering tables, primary & foreign keys, data integrity.
 
 Optimization: Window functions, ranking, running totals, query performance tuning.
+
 
 📧 I’m passionate about turning raw data into actionable insights and building efficient, scalable database systems. I’m always open to collaboration or discussion on database design, analytics, and SQL best practices.
